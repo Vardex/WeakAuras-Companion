@@ -10,6 +10,9 @@ jobs:
         node: ["13"]
 
     steps:
+      - name: "Install Apt Dependencies"
+        run: "apt-get install -y rpmbuild"
+
       - uses: actions/checkout@v2
       - name: Setup Node
         uses: actions/setup-node@v1
@@ -45,6 +48,10 @@ jobs:
           mv dist_electron/*.AppImage artifact-appimage/ || true
           mkdir artifact-snap
           mv dist_electron/*.snap artifact-snap/ || true
+          mkdir artifact-deb
+          mv dist_electron/*.deb artifact-deb/ || true
+          mkdir artifact-rpm
+          mv dist_electron/*.rpm artifact-rpm/ || true
 
       - uses: actions/upload-artifact@v2
         name: Upload AppImage
@@ -55,11 +62,17 @@ jobs:
       - uses: actions/upload-artifact@v2
         name: Upload Snap
         with:
-          name: WeakAuras-Companion-PR-Node${{ matrix.node }} Snap
+          name: WeakAuras-Companion-PR-Node${{ matrix.node }} snap
           path: artifact-snap
 
       - uses: actions/upload-artifact@v2
-        name: Upload Tarball
+        name: Upload deb
         with:
-          name: WeakAuras-Companion-PR-Node${{ matrix.node }} Tarball
-          path: dist_electron/linux-unpacked
+          name: WeakAuras-Companion-PR-Node${{ matrix.node }} deb
+          path: artifact-deb
+
+      - uses: actions/upload-artifact@v2
+        name: Upload rpm
+        with:
+          name: WeakAuras-Companion-PR-Node${{ matrix.node }} rpm
+          path: artifact-rpm
